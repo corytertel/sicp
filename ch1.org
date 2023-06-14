@@ -1,0 +1,142 @@
+* Exercise 1.2
+
+\begin{equation}                        % arbitrary environments,
+x=\sqrt{b}                              % even tables, figures
+\end{equation}                          % etc
+
+#+begin_src scheme
+(/ (+ 5 3 (- 2 (- 3 (+ 6 0.8)))) (* 3 (- 6 2) (- 2 7)))
+#+end_src
+
+* Exercise 1.3
+Define a procedure that takes three numbers as arguments and returns
+the sum of the squares of the two larger numbers.
+
+#+begin_src scheme
+(define (sum-of-squares-of-largest-two num1 num2 num3)
+  (let ((square (lambda (x) (* x x)))
+	(smallest (min num1 num2 num3)))
+    (cond
+     ((= min num1) (+ (square num2) (square num3)))
+     ((= min num2) (+ (square num1) (square num3)))
+     ((= min num3) (+ (square num1) (square num2))))))
+
+(define (sum-of-squares-of-largest-two num1 num2 num3)
+  (let ((square (lambda (x) (* x x)))
+	(sum-of-squares (lambda (x y) (+ (square x) (square y)))))
+    (cond
+     ((and (< num1 num2) (< num1 num3)) (sum-of-squares num2 num3))
+     ((and (< num2 num1) (< num2 num3)) (sum-of-squares num1 num3))
+     (t (sum-of-squares num1 num2)))))
+#+end_src
+
+* Exercise 1.4
+Observe that our model of evaluation allows for combinations whose operators
+are compound expressions. Use this observation to describe the behavior of the
+following procedure:
+
+#+begin_src scheme
+(define (a-plus-abs-b a b)
+       ((if (> b 0) + -) a b))
+#+end_src
+
+The if-expression returns a procedure which is then used as the operator for the following combination.
+
+* Exercise 1.5
+Ben Bitdiddle has invented a test to determine whether the interpreter he is
+faced with is using applicative-order evaluation or normal-order evaluation.
+He defines the following two procedures:
+
+#+begin_src scheme
+(define (p)
+p)
+
+(define (test x y)
+(if (= x 0)
+0
+y))
+#+end_src
+
+Then he evaluates the expression
+
+#+begin_src scheme
+(test 0 (p))
+#+end_src
+
+What behavior will Ben observe with an interpretter that uses applicative-order
+evaluation? What behavior will he observe with an interpretter that uses
+normal-order evaluation? Explain your answer. (Assume that the evaluation rule
+for the special form if is the same whether the interpreter is using normal or
+applicative-order: The predicate expression is evaluated first, and the result
+determines whether to evaluate the consequent or the alternative expression.)
+
+#+begin_src scheme
+;; Applicative Order
+(test 0 (p))
+(test 0 p)
+(if (= 0 0) 0 p)
+0
+
+;; Normal Order
+(test 0 (p))
+(if (= 0 0) 0 (p))
+0
+#+end_src
+
+In applicative order p gets evaluated, in normal order it doesn't. This is only a problem if ~p~ isn't pure.
+
+
+
+#+begin_src
+
+(define (pascal-triangle n)
+  (pt-iter n 0 '(1)))
+
+(define (pt-iter n count l)
+  (when (not (= n count))
+    (pt-iter n (+ count 1) (next-level l))))
+
+(define (next-level l)
+(list 1 (f l) 1))
+
+(define (f l)
+(if (null? l)
+  '()
+  (if (null? (cdr l))
+    '()
+    (cons
+      (+ (car l)
+         (cadr l))
+      (f (cdr l))))))
+
+#+end_src
+
+* Exercise 1.12
+
+Write a procedure that computes elements of Pascal's triangle by means of a recursive process.
+
+1
+1 1
+1 2 1
+1 3 3 1
+1 4 6 4 1
+1 5 10 5 1
+...
+
+#+begin_src scheme
+
+(define (pascal-triangle level)
+  )
+
+(define (next-level l)
+  (cons 1 (next--level l)))
+
+(define (next--level l)
+  (if (null? (cdr l))
+      l
+      (cons
+       (+ (car l) (cadr l))
+       (next--level (cdr l)))))
+       
+
+#+end_src
