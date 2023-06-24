@@ -129,3 +129,23 @@ Inheritance can also be implemented. Method overriding also works with this.
 (point2 'y-coordinate)
 (point2 'magnitude)
 ((point2 'inverse) '->list)
+
+
+Storing objects as lists is nice for organization, but it might be confusing to use. One possible way is a "combination" of message passing and function calls. Use function calls for "public interface" exposed messages, and internal dispatching for private functions.
+Example:
+
+(define (make-rectangular x y)
+  (define (square x)
+    (* x x))
+  (define (dispatch op)
+    (cond ((eq? op 'x-coordinate) x)
+	  ((eq? op 'y-coordinate) y)
+	  ((eq? op 'magnitude) (sqrt (+ (square x) (square y))))
+	  (else (error "Unknown op: MAKE-RECTANGULAR" op))))
+  dispatch)
+
+(define (rectangle-magnitude rect)
+  (rect 'magnitude))
+
+
+;; TODO implement all of the patterns on refactoring guru
